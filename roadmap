@@ -1,0 +1,124 @@
+🔄 Project Workflow Breakdown
+Step 1: Data Collection
+
+APIs (Off-chain)
+
+Use CoinGecko API → fetch prices, market caps, volumes for BTC, ETH, USDT, USDC.
+
+On-chain Data
+
+Use Web3.py or Dune API → fetch whale holdings & top wallets for USDT/USDC.
+
+Storage
+
+Store all fetched data in SQLite (tables: prices, whales, volatility).
+
+Step 2: Data Cleaning & Processing
+
+Convert timestamps to datetime (pd.to_datetime).
+
+Sort values by date.
+
+Handle missing/null values.
+
+Calculate risk metrics:
+
+Peg Deviation % = |price – 1| * 100 (for stablecoins).
+
+7-Day Volatility = rolling standard deviation.
+
+Whale Concentration Ratio = (supply held by top 10 wallets ÷ total supply).
+
+Step 3: Analysis & Feature Engineering
+
+Compute daily average volatility for BTC, ETH, USDC, USDT.
+
+Compare trading volume vs volatility (correlation analysis).
+
+Extract whale dominance trends (are whales accumulating or dumping?).
+
+Step 4: SQL Integration
+
+Save cleaned data into SQLite (pandas.to_sql).
+
+Allow interactive SQL queries (via Streamlit text input).
+
+Example: SELECT AVG(volatility) FROM prices WHERE asset='USDC';
+
+Step 5: Visualization
+
+Overview Tab: Cards for volatility, whale concentration, peg stability.
+
+Price & Stability Tab: Line chart of stablecoin price vs $1 peg.
+
+Whale Tab: Treemap/bar chart of top 10 holders.
+
+SQL Tab: Display query results as table or chart.
+
+Step 6: Dashboard Deployment
+
+Use Streamlit for interactive dashboard.
+
+Organize into tabs:
+
+Overview
+
+Price & Stability
+
+Whale & Liquidity
+
+SQL Query Playground
+
+Add simple navigation + refresh button for live updates.
+
+Step 7 (Optional Extensions)
+
+On-Chain Activity Tab → Daily transactions, smart contract events.
+
+News Scraping Tab → Latest crypto headlines + sentiment labels.
+
+Risk Index → Composite score (volatility + peg deviation + whale ratio).
+
+
+
+blockchain-risk-dashboard/
+│── 📄 README.md                # Project description, setup guide, screenshots
+│── 📄 requirements.txt         # List of dependencies (pandas, numpy, web3, requests, streamlit…)
+│── 📄 config.py                # Store API keys, DB configs (use .env if sensitive)
+│── 📄 main.py                  # Entry point for Streamlit dashboard
+│
+├── 📂 data/
+│   │── raw/                    # Raw API responses (JSON/CSV dumps)
+│   │── processed/              # Cleaned datasets for analysis
+│   │── blockchain.db           # SQLite database
+│
+├── 📂 notebooks/               # Jupyter/Colab notebooks (exploration & testing)
+│   │── data_cleaning.ipynb
+│   │── metrics_analysis.ipynb
+│
+├── 📂 scripts/                 # Python scripts for modularity
+│   │── fetch_prices.py         # CoinGecko API fetcher
+│   │── fetch_whales.py         # Etherscan/Dune fetcher
+│   │── scrape_news.py          # (Optional) Web scraping script
+│   │── compute_metrics.py      # Peg deviation, volatility, whale ratio
+│   │── update_database.py      # Insert/update into SQLite
+│
+├── 📂 sql/                     # Store predefined SQL queries
+│   │── volatility_query.sql
+│   │── whale_concentration.sql
+│
+├── 📂 visuals/                 # Save plots and charts
+│   │── price_trends.png
+│   │── whale_distribution.png
+│
+├── 📂 dashboard/               # Streamlit components
+│   │── __init__.py
+│   │── overview_tab.py
+│   │── stability_tab.py
+│   │── whale_tab.py
+│   │── sql_tab.py
+│
+└── 📂 docs/                    # Documentation & diagrams
+    │── architecture.png        # Environment diagram
+    │── workflow.png            # Workflow diagram
+    │── report.md               # Summary of findings
